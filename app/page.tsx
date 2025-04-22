@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from "next/image"
 import Link from "next/link"
+import logo from '../assets/logoIntegrador.png';
 
 export default function Home() {
   return (
@@ -9,33 +10,16 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8">
         <header className="flex flex-col md:flex-row items-center justify-between mb-12">
           <div className="flex items-center mb-4 md:mb-0">
-            <div className="bg-red-600 p-2 rounded-full mr-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m7 11 4.08 10.35a1 1 0 0 0 1.84 0L17 11" />
-                <path d="M17.5 11a2 2 0 0 0 1.84-2.75L16.25 2a1 1 0 0 0-1.85 0l-1.51 3.93" />
-                <path d="M4.66 8.25 2 13h16.74" />
-                <path d="M19.38 11.8c.9 1.91 1.11 4.06.62 6.1a9.8 9.8 0 0 1-1.41 3.16" />
-                <path d="M2.34 12.65c-.22.62-.4 1.26-.54 1.92-.44 2.04-.24 4.19.66 6.1" />
-                <path d="M12.5 5.3c-.85.61-1.78.95-2.75.95A3.94 3.94 0 0 1 6.5 4.5" />
-              </svg>
+            <div className=" p-2 rounded-full mr-3">
+              <Image src={logo} alt="Logo" width="62" height="62" />
             </div>
-            <h1 className="text-2xl font-bold text-red-800">Padaria</h1>
+            <h1 className="text-2xl font-bold text-red-800">Breadly</h1>
           </div>
           <div className="flex gap-4">
-            <Button asChild variant="outline" className="border-red-600 text-red-600 hover:bg-red-50">
+            <Button asChild variant="outline" className="border-red-800 text-red-800 hover:bg-red-50">
               <Link href="/login">Entrar</Link>
             </Button>
-            <Button asChild className="bg-red-600 hover:bg-red-700">
+            <Button asChild className="bg-red-800 hover:bg-red-700">
               <Link href="/signup">Cadastrar</Link>
             </Button>
           </div>
@@ -49,13 +33,13 @@ export default function Home() {
                 Controle de produção e estoque eficiente, baseado em dados históricos de vendas e consumo de
                 ingredientes. Produza a quantidade certa, com o mínimo de desperdício.
               </p>
-              <Button asChild className="bg-red-600 hover:bg-red-700 text-lg px-6 py-6 h-auto">
+              <Button asChild className="bg-red-800 hover:bg-red-700 text-lg px-6 py-6 h-auto">
                 <Link href="/signup">Começar agora</Link>
               </Button>
             </div>
             <div className="flex justify-center">
               <Image
-                src="/placeholder.svg?height=400&width=400"
+                src={logo}
                 alt="Padaria Estrela do Mar"
                 width={400}
                 height={400}
@@ -140,7 +124,7 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-red-600"
+                      className="text-red-800"
                     >
                       <path d="M4 19h16" />
                       <path d="M4 15h16" />
@@ -166,14 +150,14 @@ export default function Home() {
             <p className="text-gray-700 mb-8 max-w-2xl mx-auto">
               Junte-se a diversas padarias que já estão economizando tempo e dinheiro com nosso sistema de gestão.
             </p>
-            <Button asChild className="bg-red-600 hover:bg-red-700 text-lg px-6 py-6 h-auto">
+            <Button asChild className="bg-red-800 hover:bg-red-700 text-lg px-6 py-6 h-auto">
               <Link href="/signup">Experimente gratuitamente</Link>
             </Button>
           </section>
         </main>
 
         <footer className="border-t border-red-100 pt-8 text-center text-gray-600">
-          <p>© 2024. Todos os direitos reservados.</p>
+          <p>© 2024 Breadly. Todos os direitos reservados.</p>
         </footer>
       </div>
     </div>
