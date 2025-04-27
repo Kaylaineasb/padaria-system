@@ -18,7 +18,7 @@ const schema = yup.object().shape({
   password: yup
   .string()
   .required("Senha é obrigatória")
-  .min(8, "Mínimo 8 caracteres")
+  .min(6, "Mínimo 6 caracteres")
   .matches(/[A-Z]/, "Deve conter pelo menos uma letra maiúscula")
   .matches(/[!@#$%^&*(),.?":{}|<>]/, "Deve conter pelo menos um símbolo"),
   confirmPassword: yup
@@ -38,11 +38,30 @@ export default function SignupPage() {
   })
 
   const onSubmit = async (data: any) => {
-    console.log(data)
-    // Simula cadastro
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    router.push("/dashboard")
-  }
+    try {
+      const response = await fetch("http://localhost:3001/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: data.name,
+          email: data.email,
+          senha: data.password,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erro ao criar conta");
+      }
+  
+      router.push("/login");
+  
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-red-50 to-white p-4">
