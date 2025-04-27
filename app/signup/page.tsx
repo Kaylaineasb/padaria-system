@@ -1,41 +1,47 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import logo from '../../assets/logoIntegrador.png';
+import logo from "../../assets/logoIntegrador.png"
 import Image from "next/image"
+
+const schema = yup.object().shape({
+  name: yup.string().required("Nome é obrigatório"),
+  email: yup.string().email("Email inválido").required("Email é obrigatório"),
+  password: yup
+  .string()
+  .required("Senha é obrigatória")
+  .min(8, "Mínimo 8 caracteres")
+  .matches(/[A-Z]/, "Deve conter pelo menos uma letra maiúscula")
+  .matches(/[!@#$%^&*(),.?":{}|<>]/, "Deve conter pelo menos um símbolo"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "As senhas devem ser iguais")
+    .required("Confirme a senha"),
+})
 
 export default function SignupPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(schema),
   })
-  const [isLoading, setIsLoading] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    // Simulando cadastro
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/dashboard")
-    }, 1500)
+  const onSubmit = async (data: any) => {
+    console.log(data)
+    // Simula cadastro
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    router.push("/dashboard")
   }
 
   return (
@@ -43,7 +49,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-md border-red-100">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
-            <Image src={logo} alt="Logo" width="200" height="200" />
+            <Image src={logo} alt="Logo" width={200} height={200} />
           </div>
           <CardTitle className="text-2xl text-center text-red-800">Criar uma conta</CardTitle>
           <CardDescription className="text-center">
@@ -51,55 +57,51 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome da Padaria</Label>
                 <Input
                   id="name"
-                  name="name"
+                  {...register("name")}
                   placeholder="Digite o nome da padaria"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
                 />
+                {errors.name && <p className="text-red-600 text-sm">{errors.name.message}</p>}
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
-                  name="email"
                   type="email"
+                  {...register("email")}
                   placeholder="seu@email.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
                 />
+                {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="password">Senha</Label>
                 <Input
                   id="password"
-                  name="password"
                   type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
+                  {...register("password")}
                 />
+                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirmar Senha</Label>
                 <Input
                   id="confirmPassword"
-                  name="confirmPassword"
                   type="password"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
+                  {...register("confirmPassword")}
                 />
+                {errors.confirmPassword && <p className="text-red-600 text-sm">{errors.confirmPassword.message}</p>}
               </div>
-              <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isLoading}>
-                {isLoading ? "Criando conta..." : "Criar conta"}
+
+              <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isSubmitting}>
+                {isSubmitting ? "Criando conta..." : "Criar conta"}
               </Button>
             </div>
           </form>
