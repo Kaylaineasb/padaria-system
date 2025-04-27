@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import logo from "../../assets/logoIntegrador.png"
 import Image from "next/image"
+import { useToast } from "@/components/ui/use-toast"
 
 const schema = yup.object().shape({
   name: yup.string().required("Nome é obrigatório"),
@@ -36,6 +37,8 @@ export default function SignupPage() {
   } = useForm({
     resolver: yupResolver(schema),
   })
+  const { toast } = useToast();
+
 
   const onSubmit = async (data: any) => {
     try {
@@ -57,8 +60,14 @@ export default function SignupPage() {
   
       router.push("/login");
   
-    } catch (error) {
+    }
+    catch (error: any) {
       console.error(error);
+      toast({
+        title: "Erro ao criar conta",
+        description: error.message || "Tente novamente",
+        variant: "destructive",
+      });
     }
   };
   

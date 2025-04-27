@@ -13,6 +13,8 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import { useToast } from "@/components/ui/use-toast"
+
 
 const schema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Email é obrigatório"),
@@ -29,14 +31,39 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
+  const { toast } = useToast();
+
 
   const onSubmit = async (data: FormData) => {
-    console.log(data)
-    // Simulando autenticação
-    setTimeout(() => {
-      router.push("/dashboard")
-    }, 1500)
-  }
+    try {
+      const response = await fetch('http://localhost:3001/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Erro ao fazer login');
+      }
+  
+      const result = await response.json();
+      console.log(result);
+  
+      router.push('/dashboard');
+    } 
+    catch (error: any) 
+    {
+      console.error('Login falhou:', error.message);
+      toast({
+        title: "Erro ao entrar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-red-50 to-white p-4">
