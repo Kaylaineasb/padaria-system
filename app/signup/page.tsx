@@ -11,12 +11,12 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import logo from "../../assets/logoIntegrador.png"
 import Image from "next/image"
-import { useToast } from "@/components/ui/use-toast"
+
 
 const schema = yup.object().shape({
-  name: yup.string().required("Nome é obrigatório"),
+  nome: yup.string().required("Nome é obrigatório"),
   email: yup.string().email("Email inválido").required("Email é obrigatório"),
-  password: yup
+  senha: yup
   .string()
   .required("Senha é obrigatória")
   .min(6, "Mínimo 6 caracteres")
@@ -37,7 +37,6 @@ export default function SignupPage() {
   } = useForm({
     resolver: yupResolver(schema),
   })
-  const { toast } = useToast();
 
 
   const onSubmit = async (data: any) => {
@@ -48,9 +47,9 @@ export default function SignupPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nome: data.name,
+          nome: data.nome,
           email: data.email,
-          senha: data.password,
+          senha: data.senha,
         }),
       });
   
@@ -62,12 +61,7 @@ export default function SignupPage() {
   
     }
     catch (error: any) {
-      console.error(error);
-      toast({
-        title: "Erro ao criar conta",
-        description: error.message || "Tente novamente",
-        variant: "destructive",
-      });
+      console.error(error.message);
     }
   };
   
@@ -88,13 +82,13 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nome da Padaria</Label>
+                <Label htmlFor="nome">Nome da Padaria</Label>
                 <Input
-                  id="name"
-                  {...register("name")}
+                  id="nome"
+                  {...register("nome")}
                   placeholder="Digite o nome da padaria"
                 />
-                {errors.name && <p className="text-red-600 text-sm">{errors.name.message}</p>}
+                {errors.nome && <p className="text-red-600 text-sm">{errors.nome.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -109,13 +103,13 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="senha">Senha</Label>
                 <Input
-                  id="password"
+                  id="senha"
                   type="password"
-                  {...register("password")}
+                  {...register("senha")}
                 />
-                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+                {errors.senha && <p className="text-red-600 text-sm">{errors.senha.message}</p>}
               </div>
 
               <div className="space-y-2">

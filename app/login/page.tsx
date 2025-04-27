@@ -13,17 +13,16 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import { useToast } from "@/components/ui/use-toast"
 
 
 const schema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Email é obrigatório"),
-  password: yup.string().required("Senha é obrigatória"),
+  senha: yup.string().required("Senha é obrigatória"),
 })
 
 type FormData = {
   email: string;
-  password: string;
+  senha: string;
 }
 
 export default function LoginPage() {
@@ -31,7 +30,6 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
-  const { toast } = useToast();
 
 
   const onSubmit = async (data: FormData) => {
@@ -41,7 +39,10 @@ export default function LoginPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          email: data.email,
+          senha: data.senha,
+        }),
       });
   
       if (!response.ok) {
@@ -50,17 +51,14 @@ export default function LoginPage() {
   
       const result = await response.json();
       console.log(result);
+
+      //colocar aqui o codigo de salvar no local storage
   
       router.push('/dashboard');
     } 
     catch (error: any) 
     {
       console.error('Login falhou:', error.message);
-      toast({
-        title: "Erro ao entrar",
-        description: error.message,
-        variant: "destructive",
-      });
     }
   };
   
@@ -92,17 +90,17 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Senha</Label>
+                  <Label htmlFor="senha">Senha</Label>
                   <Link href="/forgot-password" className="text-sm text-red-800 hover:text-red-700">
                     Esqueceu a senha?
                   </Link>
                 </div>
                 <Input
-                  id="password"
+                  id="senha"
                   type="password"
-                  {...register("password")}
+                  {...register("senha")}
                 />
-                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+                {errors.senha && <p className="text-red-600 text-sm">{errors.senha.message}</p>}
               </div>
               <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isSubmitting}>
                 {isSubmitting ? "Entrando..." : "Entrar"}
