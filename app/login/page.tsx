@@ -2,7 +2,6 @@
 
 import type React from "react"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -11,20 +10,30 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import logo from '../../assets/logoIntegrador.png';
 import Image from "next/image"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+
+const schema = yup.object().shape({
+  email: yup.string().email("Email inválido").required("Email é obrigatório"),
+  password: yup.string().required("Senha é obrigatória"),
+})
+
+type FormData = {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
+    resolver: yupResolver(schema),
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
+  const onSubmit = async (data: FormData) => {
+    console.log(data)
     // Simulando autenticação
     setTimeout(() => {
-      setIsLoading(false)
       router.push("/dashboard")
     }, 1500)
   }
@@ -42,7 +51,7 @@ export default function LoginPage() {
           <CardDescription className="text-center">Entre com suas credenciais para acessar o sistema</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
@@ -50,10 +59,9 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  {...register("email")}
                 />
+                {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -65,13 +73,12 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  {...register("password")}
                 />
+                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
               </div>
-              <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isLoading}>
-                {isLoading ? "Entrando..." : "Entrar"}
+              <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isSubmitting}>
+                {isSubmitting ? "Entrando..." : "Entrar"}
               </Button>
             </div>
           </form>
