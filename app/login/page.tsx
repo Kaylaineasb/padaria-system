@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useState} from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,16 +26,43 @@ type FormData = {
 
 export default function LoginPage() {
   const router = useRouter()
+  const [loginError, setLoginError] = useState("")
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
+  
 
   const onSubmit = async (data: FormData) => {
-    console.log(data)
-    // Simulando autenticação
-    setTimeout(() => {
-      router.push("/dashboard")
-    }, 1500)
+    setLoginError("")
+
+    try {
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: data.email,   // mantém o "email"
+          senha: data.password // alterado de "password" para "senha"
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error("Falha no login");
+      }
+  
+      const result = await response.json();
+  
+      // Armazena o ID e accessToken no localStorage
+      localStorage.setItem("userId", result._data.user_id);
+      localStorage.setItem("accessToken", result._data.accessToken);
+  
+      // Redireciona para o dashboard
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Erro durante login:", error);
+      setLoginError("Credenciais inválidas. Verifique seu email e senha.")
+    }
   }
 
   return (
@@ -77,9 +104,13 @@ export default function LoginPage() {
                 />
                 {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
               </div>
+              {loginError && (
+                <p className="text-red-600 text-sm mt-2">{loginError}</p>
+              )}
               <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isSubmitting}>
                 {isSubmitting ? "Entrando..." : "Entrar"}
               </Button>
+              
             </div>
           </form>
         </CardContent>
