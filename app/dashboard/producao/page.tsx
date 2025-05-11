@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus, Search } from "lucide-react"
+import { ActionButtonsProducao } from "@/components/ui/action-buttonsProducao"
 
 export default function ProducaoPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -27,7 +28,7 @@ export default function ProducaoPage() {
     { id: 1, produto: "Pão Francês", quantidade: "30kg", inicio: "05:30", fim: "07:30", status: "Concluído" },
     { id: 2, produto: "Pão de Forma", quantidade: "15kg", inicio: "06:15", fim: "08:15", status: "Concluído" },
     { id: 3, produto: "Bolo de Chocolate", quantidade: "5kg", inicio: "07:00", fim: "09:00", status: "Em Produção" },
-    { id: 4, produto: "Pão Doce", quantidade: "10kg", inicio: "08:00", fim: "10:00", status: "Agendado" },
+    { id: 4, produto: "Pão Doce", quantidade: "10kg", inicio: "08:00", fim: "10:00", status: "Em Produção" },
   ]
 
   const producaoHistorico = [
@@ -141,7 +142,6 @@ export default function ProducaoPage() {
                       <th className="text-left p-4 font-medium text-gray-500">Produto</th>
                       <th className="text-left p-4 font-medium text-gray-500">Quantidade</th>
                       <th className="text-left p-4 font-medium text-gray-500">Início</th>
-                      <th className="text-left p-4 font-medium text-gray-500">Fim Previsto</th>
                       <th className="text-left p-4 font-medium text-gray-500">Status</th>
                       <th className="text-left p-4 font-medium text-gray-500">Ações</th>
                     </tr>
@@ -153,7 +153,6 @@ export default function ProducaoPage() {
                           <td className="p-4">{item.produto}</td>
                           <td className="p-4">{item.quantidade}</td>
                           <td className="p-4">{item.inicio}</td>
-                          <td className="p-4">{item.fim}</td>
                           <td className="p-4">
                             <span
                               className={`px-2 py-1 rounded-full text-xs ${
@@ -168,13 +167,7 @@ export default function ProducaoPage() {
                             </span>
                           </td>
                           <td className="p-4">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                            >
-                              Detalhes
-                            </Button>
+                            <ActionButtonsProducao onConfirm={()=>{}} onCancel={()=>{}}/>
                           </td>
                         </tr>
                       ))
@@ -216,13 +209,7 @@ export default function ProducaoPage() {
                             </span>
                           </td>
                           <td className="p-4">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                            >
-                              Detalhes
-                            </Button>
+                            <ActionButtonsProducao onConfirm={()=>{}} onCancel={()=>{}}/>
                           </td>
                         </tr>
                       ))
