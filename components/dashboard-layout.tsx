@@ -5,12 +5,13 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BarChart3, ChevronDown, CookingPot, Home, LogOut, Menu, Package, Settings, ShoppingCart } from "lucide-react"
+import {  ChevronDown, CookingPot, Home, LogOut, Menu, Package, ShoppingCart, ChefHat } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import logo from '../assets/logoIntegrador.png';
 import Image from "next/image"
+import path from "path"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -40,6 +41,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       name: "Receitas",
       path: "/dashboard/receitas",
       icon: ShoppingCart,
+    },
+    {
+      name: "Ingredientes",
+      path: "/dashboard/ingredientes",
+      icon: ChefHat,
     }
   ]
 
