@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, {useState} from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -27,41 +27,43 @@ type FormData = {
 
 export default function LoginPage() {
   const router = useRouter()
+  const [loginError, setLoginError] = useState("")
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
 
-
   const onSubmit = async (data: FormData) => {
+    setLoginError("")
+
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3001/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email: data.email,
-          senha: data.senha,
-        }),
+          senha: data.senha
+        })
       });
   
       if (!response.ok) {
-        throw new Error('Erro ao fazer login');
+        throw new Error("Falha no login");
       }
   
       const result = await response.json();
-      console.log(result);
-
-      //colocar aqui o codigo de salvar no local storage
   
-      router.push('/dashboard');
-    } 
-    catch (error: any) 
-    {
-      console.error('Login falhou:', error.message);
+      // Armazena o ID e accessToken no localStorage
+      localStorage.setItem("userId", result._data.user_id);
+      localStorage.setItem("accessToken", result._data.accessToken);
+  
+      // Redireciona para o dashboard
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Erro durante login:", error);
+      setLoginError("Credenciais inválidas. Verifique seu email e senha.")
     }
-  };
-  
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-red-50 to-white p-4">
@@ -102,9 +104,13 @@ export default function LoginPage() {
                 />
                 {errors.senha && <p className="text-red-600 text-sm">{errors.senha.message}</p>}
               </div>
+              {loginError && (
+                <p className="text-red-600 text-sm mt-2">{loginError}</p>
+              )}
               <Button type="submit" className="w-full bg-red-800 hover:bg-red-700" disabled={isSubmitting}>
                 {isSubmitting ? "Entrando..." : "Entrar"}
               </Button>
+              
             </div>
           </form>
         </CardContent>
