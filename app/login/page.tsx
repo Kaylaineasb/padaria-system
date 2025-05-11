@@ -14,14 +14,15 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 
+
 const schema = yup.object().shape({
   email: yup.string().email("Email inválido").required("Email é obrigatório"),
-  password: yup.string().required("Senha é obrigatória"),
+  senha: yup.string().required("Senha é obrigatória"),
 })
 
 type FormData = {
   email: string;
-  password: string;
+  senha: string;
 }
 
 export default function LoginPage() {
@@ -30,7 +31,6 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
   })
-  
 
   const onSubmit = async (data: FormData) => {
     setLoginError("")
@@ -42,8 +42,8 @@ export default function LoginPage() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          email: data.email,   // mantém o "email"
-          senha: data.password // alterado de "password" para "senha"
+          email: data.email,
+          senha: data.senha
         })
       });
   
@@ -92,17 +92,17 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Senha</Label>
+                  <Label htmlFor="senha">Senha</Label>
                   <Link href="/forgot-password" className="text-sm text-red-800 hover:text-red-700">
                     Esqueceu a senha?
                   </Link>
                 </div>
                 <Input
-                  id="password"
+                  id="senha"
                   type="password"
-                  {...register("password")}
+                  {...register("senha")}
                 />
-                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+                {errors.senha && <p className="text-red-600 text-sm">{errors.senha.message}</p>}
               </div>
               {loginError && (
                 <p className="text-red-600 text-sm mt-2">{loginError}</p>

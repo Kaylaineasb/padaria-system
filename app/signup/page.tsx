@@ -12,13 +12,14 @@ import { useRouter } from "next/navigation"
 import logo from "../../assets/logoIntegrador.png"
 import Image from "next/image"
 
+
 const schema = yup.object().shape({
-  name: yup.string().required("Nome é obrigatório"),
+  nome: yup.string().required("Nome é obrigatório"),
   email: yup.string().email("Email inválido").required("Email é obrigatório"),
-  password: yup
+  senha: yup
   .string()
   .required("Senha é obrigatória")
-  .min(8, "Mínimo 8 caracteres")
+  .min(6, "Mínimo 6 caracteres")
   .matches(/[A-Z]/, "Deve conter pelo menos uma letra maiúscula")
   .matches(/[!@#$%^&*(),.?":{}|<>]/, "Deve conter pelo menos um símbolo"),
   confirmPassword: yup
@@ -37,12 +38,33 @@ export default function SignupPage() {
     resolver: yupResolver(schema),
   })
 
+
   const onSubmit = async (data: any) => {
-    console.log(data)
-    // Simula cadastro
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    router.push("/dashboard")
-  }
+    try {
+      const response = await fetch("http://localhost:3001/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: data.nome,
+          email: data.email,
+          senha: data.senha,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Erro ao criar conta");
+      }
+  
+      router.push("/login");
+  
+    }
+    catch (error: any) {
+      console.error(error.message);
+    }
+  };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-red-50 to-white p-4">
@@ -60,13 +82,13 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Nome da Padaria</Label>
+                <Label htmlFor="nome">Nome da Padaria</Label>
                 <Input
-                  id="name"
-                  {...register("name")}
+                  id="nome"
+                  {...register("nome")}
                   placeholder="Digite o nome da padaria"
                 />
-                {errors.name && <p className="text-red-600 text-sm">{errors.name.message}</p>}
+                {errors.nome && <p className="text-red-600 text-sm">{errors.nome.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -81,13 +103,13 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="senha">Senha</Label>
                 <Input
-                  id="password"
+                  id="senha"
                   type="password"
-                  {...register("password")}
+                  {...register("senha")}
                 />
-                {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+                {errors.senha && <p className="text-red-600 text-sm">{errors.senha.message}</p>}
               </div>
 
               <div className="space-y-2">
